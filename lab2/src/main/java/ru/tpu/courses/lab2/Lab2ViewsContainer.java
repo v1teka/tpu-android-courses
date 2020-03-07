@@ -64,9 +64,6 @@ public class Lab2ViewsContainer extends LinearLayout {
         double val = randomValue();
         viewsValues.add(val);
         addViewValue(val, viewsValues.size());
-//        Toast toast = Toast.makeText(getContext(),
-//                String.valueOf(val), Toast.LENGTH_SHORT);
-//        toast.show();
     }
 
     public void addViewValue(double viewValue, int number) {
