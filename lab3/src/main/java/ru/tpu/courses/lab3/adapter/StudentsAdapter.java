@@ -1,5 +1,6 @@
 package ru.tpu.courses.lab3.adapter;
 
+import android.util.Log;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -54,6 +55,11 @@ public class StudentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public static final int TYPE_STUDENT = 1;
 
     private List<Student> students = new ArrayList<>();
+    private onStudentClickListener mOnStudentClickListener;
+
+    public StudentsAdapter(onStudentClickListener listener){
+        mOnStudentClickListener = listener;
+    }
 
     @Override
     @NonNull
@@ -62,7 +68,7 @@ public class StudentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case TYPE_NUMBER:
                 return new NumberHolder(parent);
             case TYPE_STUDENT:
-                return new StudentHolder(parent);
+                return new StudentHolder(parent, mOnStudentClickListener);
         }
         throw new IllegalArgumentException("unknown viewType = " + viewType);
     }
@@ -98,4 +104,10 @@ public class StudentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void setStudents(List<Student> students) {
         this.students = students;
     }
+
+    public interface onStudentClickListener{
+        void onStudentClick(int id);
+    }
 }
+
+

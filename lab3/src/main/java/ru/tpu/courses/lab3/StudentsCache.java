@@ -1,5 +1,7 @@
 package ru.tpu.courses.lab3;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -45,6 +47,10 @@ public class StudentsCache {
 
     public void addStudent(@NonNull Student student) {
         students.add(student);
+    }
+
+    public void removeStudent(Student student) {
+        students.remove(student);
     }
 
     public boolean contains(@NonNull Student student) {

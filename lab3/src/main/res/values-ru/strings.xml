@@ -8,4 +8,5 @@
 
     <string name="lab3_error_already_exists">Такой студент уже существует</string>
     <string name="lab3_error_empty_fields">Все поля должны быть заполнены</string>
+    <string name="lab3_group_name">Название</string>
 </resources>

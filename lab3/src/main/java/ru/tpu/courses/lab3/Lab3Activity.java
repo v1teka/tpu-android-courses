@@ -9,7 +9,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
+import android.widget.Toast;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.time.Duration;
 
 import ru.tpu.courses.lab3.adapter.StudentsAdapter;
 
@@ -32,10 +37,12 @@ import ru.tpu.courses.lab3.adapter.StudentsAdapter;
  * Для работы RecyclerView необходимо подключить отдельную библиотеку (см. build.gradle)
  * </p>
  */
-public class Lab3Activity extends AppCompatActivity {
+public class Lab3Activity extends AppCompatActivity implements StudentsAdapter.onStudentClickListener{
 
     private static final int REQUEST_STUDENT_ADD = 1;
-
+    private static final int REQUEST_STUDENT_EDIT = 2;
+    private static final int REQUEST_GROUP_ADD = 1;
+    private static String TAG = "Lab3Activity";
     public static Intent newIntent(@NonNull Context context) {
         return new Intent(context, Lab3Activity.class);
     }
@@ -44,6 +51,7 @@ public class Lab3Activity extends AppCompatActivity {
 
     private RecyclerView list;
     private FloatingActionButton fab;
+    private FloatingActionButton fabGroup;
 
     private StudentsAdapter studentsAdapter;
 
@@ -56,6 +64,7 @@ public class Lab3Activity extends AppCompatActivity {
         setContentView(R.layout.lab3_activity);
         list = findViewById(android.R.id.list);
         fab = findViewById(R.id.fab);
+        fabGroup = findViewById(R.id.fab_group);
 
         /*
         Здесь идёт инициализация RecyclerView. Первое, что необходимо для его работы, это установить
@@ -74,7 +83,7 @@ public class Lab3Activity extends AppCompatActivity {
         необходимая для заполнения RecyclerView. В примере мы выводим пронумерованный список
         студентов, подробнее о работе адаптера в документации к классу StudentsAdapter.
          */
-        list.setAdapter(studentsAdapter = new StudentsAdapter());
+        list.setAdapter(studentsAdapter = new StudentsAdapter(this));
         studentsAdapter.setStudents(studentsCache.getStudents());
 
         /*
@@ -88,6 +97,13 @@ public class Lab3Activity extends AppCompatActivity {
                 v -> startActivityForResult(
                         AddStudentActivity.newIntent(this),
                         REQUEST_STUDENT_ADD
+                )
+        );
+
+        fabGroup.setOnClickListener(
+                v -> startActivityForResult(
+                        AddGroupActivity.newIntent(this),
+                        REQUEST_GROUP_ADD
                 )
         );
     }
@@ -107,14 +123,30 @@ public class Lab3Activity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_STUDENT_ADD && resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             Student student = AddStudentActivity.getResultStudent(data);
+            Student oldStudent = AddStudentActivity.getOldStudent();
+            int change = 2;
 
+            if(requestCode == REQUEST_STUDENT_EDIT){
+                studentsCache.removeStudent(oldStudent);
+                change=0;
+            }
             studentsCache.addStudent(student);
-
             studentsAdapter.setStudents(studentsCache.getStudents());
-            studentsAdapter.notifyItemRangeInserted(studentsAdapter.getItemCount() - 2, 2);
+            //studentsAdapter.notifyItemRangeInserted(studentsAdapter.getItemCount() - change, change);
+            studentsAdapter.notifyDataSetChanged();
             list.scrollToPosition(studentsAdapter.getItemCount() - 1);
         }
+    }
+
+    @Override
+    public void onStudentClick(int id) {
+        int position = id/2;
+        Student student = studentsCache.getStudents().get(position);
+        startActivityForResult(
+                AddStudentActivity.newIntent(this, student),
+                REQUEST_STUDENT_EDIT
+        );
     }
 }
