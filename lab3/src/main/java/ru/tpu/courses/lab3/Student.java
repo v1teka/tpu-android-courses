@@ -20,16 +20,20 @@ public class Student implements Parcelable {
 	@NonNull
 	public String lastName;
 
+	public int groupId;
+
 	public Student(@NonNull String firstName, @NonNull String secondName, @NonNull String lastName) {
 		this.lastName = lastName;
 		this.firstName = firstName;
 		this.secondName = secondName;
+		this.groupId = -1;
 	}
 
 	protected Student(Parcel in) {
 		firstName = in.readString();
 		lastName = in.readString();
 		secondName = in.readString();
+		groupId = in.readInt();
 	}
 
 	public static final Creator<Student> CREATOR = new Creator<Student>() {
@@ -54,6 +58,7 @@ public class Student implements Parcelable {
 		dest.writeString(firstName);
 		dest.writeString(lastName);
 		dest.writeString(secondName);
+		dest.writeInt(groupId);
 	}
 
 	@Override
@@ -68,6 +73,6 @@ public class Student implements Parcelable {
 
 	@Override
 	public int hashCode() {
-		return ObjectsCompat.hash(lastName, firstName, secondName);
+		return ObjectsCompat.hash(lastName, firstName, secondName, groupId);
 	}
 }

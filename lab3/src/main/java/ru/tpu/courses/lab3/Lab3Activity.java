@@ -17,6 +17,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.time.Duration;
 
 import ru.tpu.courses.lab3.adapter.StudentsAdapter;
+import ru.tpu.courses.lab3.adapter.GroupsAdapter;
 
 /**
  * <b>RecyclerView, взаимодействие между экранами. Memory Cache.</b>
@@ -41,19 +42,21 @@ public class Lab3Activity extends AppCompatActivity implements StudentsAdapter.o
 
     private static final int REQUEST_STUDENT_ADD = 1;
     private static final int REQUEST_STUDENT_EDIT = 2;
-    private static final int REQUEST_GROUP_ADD = 1;
+    private static final int REQUEST_GROUP_ADD = 3;
     private static String TAG = "Lab3Activity";
     public static Intent newIntent(@NonNull Context context) {
         return new Intent(context, Lab3Activity.class);
     }
 
     private final StudentsCache studentsCache = StudentsCache.getInstance();
+    private final GroupsCache groupsCache = GroupsCache.getInstance();
 
     private RecyclerView list;
     private FloatingActionButton fab;
     private FloatingActionButton fabGroup;
 
     private StudentsAdapter studentsAdapter;
+    private GroupsAdapter groupsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +88,8 @@ public class Lab3Activity extends AppCompatActivity implements StudentsAdapter.o
          */
         list.setAdapter(studentsAdapter = new StudentsAdapter(this));
         studentsAdapter.setStudents(studentsCache.getStudents());
+
+        groupsAdapter = new GroupsAdapter();
 
         /*
         При нажатии на кнопку мы переходим на Activity для добавления студента. Обратите внимание,
@@ -124,11 +129,18 @@ public class Lab3Activity extends AppCompatActivity implements StudentsAdapter.o
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            Student student = AddStudentActivity.getResultStudent(data);
-            Student oldStudent = AddStudentActivity.getOldStudent();
-            int change = 2;
+            if(requestCode == REQUEST_GROUP_ADD){
+                Group group = AddGroupActivity.getResultGroup(data);
+                groupsCache.addGroup(group);
+                groupsAdapter.setGroups(groupsCache.getGroups());
+                return;
+            }
 
+            Student student = AddStudentActivity.getResultStudent(data);
+            int change = 2;
+            Log.d(TAG, "onActivityResult: "+student.firstName);
             if(requestCode == REQUEST_STUDENT_EDIT){
+                Student oldStudent = AddStudentActivity.getOldStudent();
                 studentsCache.removeStudent(oldStudent);
                 change=0;
             }

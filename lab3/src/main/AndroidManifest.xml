@@ -6,5 +6,6 @@
 	<application>
 		<activity android:name=".Lab3Activity" />
 		<activity android:name=".AddStudentActivity" />
+		<activity android:name=".AddGroupActivity" />
 	</application>
 </manifest>

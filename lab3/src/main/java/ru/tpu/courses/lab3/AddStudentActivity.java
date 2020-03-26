@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -52,7 +54,7 @@ public class AddStudentActivity extends AppCompatActivity {
     private Spinner groupSpinner;
 
     private StudentsAdapter studentsAdapter;
-    private GroupsAdapter groupsAdapter;
+    private static GroupsCache groupsCache = GroupsCache.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +75,9 @@ public class AddStudentActivity extends AppCompatActivity {
         lastName = findViewById(R.id.last_name);
         groupSpinner = findViewById(R.id.lab3_spinner);
 
-        //groupSpinner.setAdapter(groupsAdapter = new GroupsAdapter());
+        ArrayAdapter<Group> adapter = new ArrayAdapter<Group>(getApplicationContext(), R.layout.lab3_item_group, R.id.group);
+        adapter.addAll(groupsCache.getGroups());
+        groupSpinner.setAdapter(adapter);
 
         Bundle arguments = getIntent().getExtras();
 

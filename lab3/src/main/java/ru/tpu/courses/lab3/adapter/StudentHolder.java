@@ -23,7 +23,7 @@ public class StudentHolder extends RecyclerView.ViewHolder{
         student = itemView.findViewById(R.id.student);
 
         this.onStudentClickListener = listener;
-        //parent.setOnClickListener(this);
+
         student.setOnClickListener(view -> {
             onStudentClickListener.onStudentClick(getAdapterPosition());
         });

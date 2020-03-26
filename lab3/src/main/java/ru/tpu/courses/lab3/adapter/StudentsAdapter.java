@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.tpu.courses.lab3.Group;
 import ru.tpu.courses.lab3.Student;
 
 /**
@@ -55,6 +56,7 @@ public class StudentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public static final int TYPE_STUDENT = 1;
 
     private List<Student> students = new ArrayList<>();
+    private List<Group> groups = new ArrayList<>();
     private onStudentClickListener mOnStudentClickListener;
 
     public StudentsAdapter(onStudentClickListener listener){
@@ -75,15 +77,20 @@ public class StudentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        Student student = students.get(position / 2);
+        String groupName = "";
+        if(student.groupId > 0){
+            groupName = groups.get(student.groupId).groupName;
+        }
         switch (getItemViewType(position)) {
             case TYPE_NUMBER:
                 NumberHolder numberHolder = (NumberHolder) holder;
                 // Высчитыванием номер студента начиная с 1
                 numberHolder.bind((position + 1) / 2);
+                numberHolder.number.setText(groupName);
                 break;
             case TYPE_STUDENT:
                 StudentHolder studentHolder = (StudentHolder) holder;
-                Student student = students.get(position / 2);
                 studentHolder.student.setText(
                         student.lastName + " " + student.firstName + " " + student.secondName
                 );
