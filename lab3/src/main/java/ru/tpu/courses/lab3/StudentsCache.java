@@ -9,21 +9,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Кэш списка студентов в оперативной памяти. Самый быстрый тип кэша, но ограничен размерами
- * оперативной памяти и имеет время жизни равное жизни приложения. Т.е. если приложение будет
- * выгружено из оперативной памяти - то все данные из этого кэша пропадут.
- * Такой тип кэшей используется для временных данных, потеря которых не важна, в большинстве случаев
- * чтобы не делать дополнительные запросы на сервер.
- */
 public class StudentsCache {
 
     private static StudentsCache instance;
 
-    /**
-     * Классическая реализация паттерна Singleton. Нам необходимо, чтобы в приложении был только
-     * один кэш студентов.
-     */
     public static StudentsCache getInstance() {
         if (instance == null) {
             synchronized (StudentsCache.class) {
@@ -55,5 +44,13 @@ public class StudentsCache {
 
     public boolean contains(@NonNull Student student) {
         return students.contains(student);
+    }
+
+    public Student getByHashCode(int code){
+        for (Student o : students) {
+            if (o.hashCode() == code)
+                return o;
+        }
+        return null;
     }
 }

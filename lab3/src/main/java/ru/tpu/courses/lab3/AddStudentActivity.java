@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -86,64 +87,62 @@ public class AddStudentActivity extends AppCompatActivity {
             firstName.setText(student.firstName);
             lastName.setText(student.lastName);
             secondName.setText(student.secondName);
+            if(student.groupName.length() > 0)
+                selectSpinnerItemByValue(groupSpinner, student.groupName);
         }
     }
 
+    private static void selectSpinnerItemByValue(Spinner spnr, String value) {
+        SpinnerAdapter adapter = (SpinnerAdapter) spnr.getAdapter();
+        for (int position = 0; position < adapter.getCount(); position++) {
+            if(adapter.getItem(position).toString() == value) {
+                spnr.setSelection(position);
+                return;
+            }
+        }
+    }
 
-    /**
-     * Переопределив этот метод мы можем добавить действия в меню ActionBar-а. Это иконки справа.
-     * Задаются они обычно через XML в ресурсах типа menu и инфлейтятся по аналогии с View.
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.lab3_add_student, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    /**
-     * Этот метод вызывается когда пользователь нажимает на любую из созданных ранее меню.
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Если пользователь нажал "назад", то просто закрываем Activity
         if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
         }
-        // Если пользователь нажал "Сохранить"
+
         if (item.getItemId() == R.id.action_save) {
-            // Создаём объект студента из введенных
             Student student = new Student(
                     firstName.getText().toString(),
                     secondName.getText().toString(),
                     lastName.getText().toString()
             );
 
-            // Проверяем, что все поля были указаны
+            Object selectedGroupName = groupSpinner.getSelectedItem();
+            if(selectedGroupName != null) {
+                student.groupName = selectedGroupName.toString();
+            }
+
             if (TextUtils.isEmpty(student.firstName) ||
                     TextUtils.isEmpty(student.secondName) ||
                     TextUtils.isEmpty(student.lastName)) {
-                // Класс Toast позволяет показать системное уведомление поверх всего UI
                 Toast.makeText(this, R.string.lab3_error_empty_fields, Toast.LENGTH_LONG).show();
                 return true;
             }
 
-            // Проверяем, что точно такого же студента в списке нет
             if (studentsCache.contains(student)) {
                 Toast.makeText(this, R.string.lab3_error_already_exists, Toast.LENGTH_LONG).show();
                 return true;
             }
 
-            // Сохраняем Intent с инфорамцией от этой Activity, который будет передан в onActivityResult
-            // вызвавшей его Activity.
             Intent data = new Intent();
-            // Сохраяем объект студента. Для того, чтобы сохранить объект класса, он должен реализовывать
-            // интерфейс Parcelable или Serializable, т.к. Intent передаётся в виде бинарных данных
             data.putExtra(EXTRA_STUDENT, student);
-            // Указываем resultCode и сам Intent, которые будут переданы вызвавшей нас Activity в методе
-            // onActivityResult
             setResult(RESULT_OK, data);
-            // Закрываем нашу Activity
+
             finish();
             return true;
         }

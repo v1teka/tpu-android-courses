@@ -6,12 +6,7 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import androidx.core.util.ObjectsCompat;
 
-/**
- * Для передачи самописных объектов через {@link android.content.Intent} или
- * {@link android.os.Bundle}, необходимо реализовать интерфейс {@link Parcelable}. В нём описывается
- * как сохранить и восстановить объект используя примитивные свойства (String, int и т.д.).
- */
-public class Student implements Parcelable {
+public class Student extends StudentGroupListItem implements Parcelable {
 
 	@NonNull
 	public String firstName;
@@ -20,20 +15,20 @@ public class Student implements Parcelable {
 	@NonNull
 	public String lastName;
 
-	public int groupId;
+	public String groupName;
 
 	public Student(@NonNull String firstName, @NonNull String secondName, @NonNull String lastName) {
 		this.lastName = lastName;
 		this.firstName = firstName;
 		this.secondName = secondName;
-		this.groupId = -1;
+		this.groupName = "";
 	}
 
 	protected Student(Parcel in) {
 		firstName = in.readString();
 		lastName = in.readString();
 		secondName = in.readString();
-		groupId = in.readInt();
+		groupName = in.readString();
 	}
 
 	public static final Creator<Student> CREATOR = new Creator<Student>() {
@@ -58,7 +53,7 @@ public class Student implements Parcelable {
 		dest.writeString(firstName);
 		dest.writeString(lastName);
 		dest.writeString(secondName);
-		dest.writeInt(groupId);
+		dest.writeString(groupName);
 	}
 
 	@Override
@@ -73,6 +68,11 @@ public class Student implements Parcelable {
 
 	@Override
 	public int hashCode() {
-		return ObjectsCompat.hash(lastName, firstName, secondName, groupId);
+		return ObjectsCompat.hash(lastName, firstName, secondName, groupName);
+	}
+
+	@Override
+	public int getType() {
+		return TYPE_STUDENT;
 	}
 }
