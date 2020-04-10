@@ -9,6 +9,7 @@
 	<application>
 		<activity android:name=".Lab4Activity" />
 		<activity android:name=".add.AddStudentActivity" />
+		<activity android:name=".add.AddGroupActivity" />
 
 		<provider
 			android:name="androidx.core.content.FileProvider"
