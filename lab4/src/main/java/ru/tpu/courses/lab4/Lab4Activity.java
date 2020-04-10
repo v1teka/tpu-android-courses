@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import ru.tpu.courses.lab4.adapter.GroupStudentAdapter;
 import ru.tpu.courses.lab4.add.AddStudentActivity;
 import ru.tpu.courses.lab4.add.AddGroupActivity;
+import ru.tpu.courses.lab4.add.TempActivityPref;
+import ru.tpu.courses.lab4.add.TempStudentPref;
 import ru.tpu.courses.lab4.db.Lab4Database;
 import ru.tpu.courses.lab4.db.Student;
 import ru.tpu.courses.lab4.db.StudentDao;
@@ -41,6 +44,8 @@ public class Lab4Activity extends AppCompatActivity  implements GroupStudentAdap
     private static final int REQUEST_STUDENT_EDIT = 2;
     private static final int REQUEST_GROUP_ADD = 3;
 
+    private TempActivityPref activityPref;
+
     public static Intent newIntent(@NonNull Context context) {
         return new Intent(context, Lab4Activity.class);
     }
@@ -56,9 +61,10 @@ public class Lab4Activity extends AppCompatActivity  implements GroupStudentAdap
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*
-        Получаем объект для выполнения запросов к БД. См. Lab4Database.
-         */
+
+
+        activityPref = new TempActivityPref(this);
+
         studentDao = Lab4Database.getInstance(this).studentDao();
         groupDao = Lab4Database.getInstance(this).groupDao();
 
@@ -72,9 +78,10 @@ public class Lab4Activity extends AppCompatActivity  implements GroupStudentAdap
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         list.setLayoutManager(layoutManager);
 
-        // Точно такой же список, как и в lab3, но с добавленным выводом фото
         list.setAdapter(groupStudentAdapter = new GroupStudentAdapter(this));
         groupStudentAdapter.setData(studentDao.getAll(), groupDao.getAll());
+
+        list.scrollToPosition(activityPref.getPosition());
 
         fab.setOnClickListener(
                 v -> startActivityForResult(
@@ -89,6 +96,17 @@ public class Lab4Activity extends AppCompatActivity  implements GroupStudentAdap
                         REQUEST_GROUP_ADD
                 )
         );
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        View firstChild = list.getChildAt(0);
+        int firstVisiblePosition = list.getChildAdapterPosition(firstChild);
+        int offset = firstChild.getTop();
+
+        activityPref.set(firstVisiblePosition);
     }
 
     @Override

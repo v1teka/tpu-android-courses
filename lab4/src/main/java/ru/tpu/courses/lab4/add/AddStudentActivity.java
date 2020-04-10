@@ -75,7 +75,6 @@ public class AddStudentActivity extends AppCompatActivity {
         studentDao = Lab4Database.getInstance(this).studentDao();
         groupDao = Lab4Database.getInstance(this).groupDao();
 
-        //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         firstName = findViewById(R.id.first_name);
@@ -90,9 +89,6 @@ public class AddStudentActivity extends AppCompatActivity {
         ArrayAdapter<Group> adapter = new ArrayAdapter<Group>(getApplicationContext(), R.layout.lab4_item_group, R.id.group);
         adapter.addAll(groupDao.getAll());
         groupName.setAdapter(adapter);
-
-
-
 
         Group selectedGroup = groupDao.selectById(studentPref.getGroupId());
         if(selectedGroup != null)
@@ -185,7 +181,6 @@ public class AddStudentActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(student.firstName) ||
                 TextUtils.isEmpty(student.secondName) ||
                 TextUtils.isEmpty(student.lastName)) {
-            // Класс Toast позволяет показать системное уведомление поверх всего UI
             Toast.makeText(this, R.string.lab4_error_empty_fields, Toast.LENGTH_LONG).show();
             return;
         }
