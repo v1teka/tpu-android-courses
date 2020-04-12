@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.Range;
 import android.view.ContextThemeWrapper;
 import android.widget.LinearLayout;
 import 	android.widget.Toast;
