@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion compileSdk
+    compileSdkVersion minSdk
     defaultConfig {
         applicationId "ru.tpu.courses.android"
 
