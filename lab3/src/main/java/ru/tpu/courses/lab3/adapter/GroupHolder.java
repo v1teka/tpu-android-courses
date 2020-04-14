@@ -14,6 +14,6 @@ public class GroupHolder extends RecyclerView.ViewHolder {
 
     public GroupHolder(ViewGroup parent) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.lab3_item_group, parent, false));
-        group = itemView.findViewById(R.id.group);
+        group = (TextView)itemView.findViewById(R.id.group);
     }
 }

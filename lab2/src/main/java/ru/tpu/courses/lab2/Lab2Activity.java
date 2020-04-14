@@ -1,12 +1,16 @@
 package ru.tpu.courses.lab2;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 
 public class Lab2Activity extends AppCompatActivity {
     public static Intent newIntent(@NonNull Context context) {
