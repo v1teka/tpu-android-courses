@@ -84,13 +84,13 @@ public class AddStudentActivity extends AppCompatActivity {
 
         firstName.setText(studentPref.getFirstName());
         secondName.setText(studentPref.getSecondName());
-        lastName.setText(studentPref.getLastName());groupName = findViewById(R.id.group_spinner);
+        lastName.setText(studentPref.getLastName());
 
         ArrayAdapter<Group> adapter = new ArrayAdapter<Group>(getApplicationContext(), R.layout.lab4_item_group, R.id.group);
         adapter.addAll(groupDao.getAll());
         groupName.setAdapter(adapter);
 
-        Group selectedGroup = groupDao.selectById(studentPref.getGroupId());
+        Group selectedGroup = groupDao.selectGroupById(studentPref.getGroupId());
         if(selectedGroup != null)
             selectSpinnerItemByValue(groupName, selectedGroup.groupName);
 
@@ -187,7 +187,9 @@ public class AddStudentActivity extends AppCompatActivity {
 
         Object selectedGroupName = groupName.getSelectedItem();
         if(selectedGroupName != null) {
-            student.groupId = groupDao.selectByName(selectedGroupName.toString()).id;
+            Group selectedGroup = groupDao.selectByName(selectedGroupName.toString());
+            if(selectedGroup != null)
+                student.groupId = selectedGroup.id;
         }
 
         if (studentDao.count(student.firstName, student.secondName, student.lastName, student.groupId) > 0) {
