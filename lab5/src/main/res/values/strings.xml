@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">lab5</string>
+    <string name="lab5_title">%s</string>
+    <string name="lab5_action_search">Search</string>
 </resources>

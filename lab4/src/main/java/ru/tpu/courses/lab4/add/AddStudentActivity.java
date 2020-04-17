@@ -138,6 +138,7 @@ public class AddStudentActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.lab4_add_student, menu);
+
         return super.onCreateOptionsMenu(menu);
     }
 

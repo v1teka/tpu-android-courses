@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.Px;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -62,12 +63,16 @@ public class Lab2ViewsContainer extends LinearLayout {
     public void addValue() {
         double val = randomValue();
         viewsValues.add(val);
-        addViewValue(val, viewsValues.size());
+        double[] newValues = new double[viewsValues.size()];
+        for(int i=0;i<newValues.length;i++)
+            newValues[i] = viewsValues.get(i);
+        setViewsValues(newValues);
     }
 
-    public void addViewValue(double viewValue, int number) {
+    public void addViewValue(double viewValue, int number, boolean max) {
         Lab2View lab2View = new Lab2View(getContext());
         lab2View.setValue(viewValue);
+        lab2View.setMax(max);
         lab2View.setTitle("Запись номер "+number);
         addView(lab2View);
     }
@@ -75,9 +80,10 @@ public class Lab2ViewsContainer extends LinearLayout {
     public void setViewsValues(double[] values) {
         removeAllViews();
         viewsValues = new ArrayList<>();
+        double maxValue = getMaxValue(values);
         for (int i = 0; i < values.length; i++) {
             viewsValues.add(values[i]);
-            addViewValue(values[i], i+1);
+            addViewValue(values[i], i+1, (values[i] == maxValue));
         }
     }
 
@@ -89,12 +95,15 @@ public class Lab2ViewsContainer extends LinearLayout {
         return target;
     }
 
-    @Px
-    public int dpToPx(float dp) {
-        if (dp == 0) {
-            return 0;
+    private double getMaxValue(double[] values){
+        int maxIndex = 0;
+        int i=0;
+        for(double value : values){
+            if(value > values[maxIndex]){
+                maxIndex = i;
+            }
+            i++;
         }
-        float density = getResources().getDisplayMetrics().density;
-        return (int) Math.ceil(density * dp);
+        return values[maxIndex];
     }
 }

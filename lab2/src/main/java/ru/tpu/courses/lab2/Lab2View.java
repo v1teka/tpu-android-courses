@@ -1,6 +1,8 @@
 package ru.tpu.courses.lab2;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
@@ -39,5 +41,12 @@ public class Lab2View extends ConstraintLayout
         valueTextView.setText(String.valueOf(value));
         progressBar.setProgress(((int) Math.round(value)));
 
+    }
+
+    public void setMax(boolean isMax){
+        int color = (isMax)? Color.RED: Color.BLUE;
+        Drawable progressDrawable = progressBar.getProgressDrawable().mutate();
+        progressDrawable.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN);
+        progressBar.setProgressDrawable(progressDrawable);
     }
 }
