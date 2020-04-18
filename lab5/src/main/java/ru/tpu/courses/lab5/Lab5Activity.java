@@ -2,27 +2,29 @@ package ru.tpu.courses.lab5;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import ru.tpu.courses.lab5.adapter.ReposAdapter;
 
 public class Lab5Activity  extends AppCompatActivity {
     private static final String TAG = "Lab5Activity";
     private static Executor threadExecutor = Executors.newCachedThreadPool();
-
+    private RecyclerView list;
+    private final ReposCache reposCache = ReposCache.getInstance();
+    private ReposAdapter reposAdapter;
     public static Intent newIntent(@NonNull Context context) {
         return new Intent(context, Lab5Activity.class);
     }
@@ -35,7 +37,16 @@ public class Lab5Activity  extends AppCompatActivity {
 
         setTitle(getString(R.string.lab5_title, getClass().getSimpleName()));
         setContentView(R.layout.lab5_activity);
-        //Handler::postDelayed(threadExecutor, 500);
+
+        list = findViewById(android.R.id.list);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        list.setLayoutManager(layoutManager);
+
+        list.setAdapter(reposAdapter = new ReposAdapter());
+        reposAdapter.setRepos(reposCache.getRepos());
+
+        task = new SearchTask(searchObserver);
     }
 
     @Override
@@ -54,10 +65,8 @@ public class Lab5Activity  extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                if(task != null)
-                    task.unregisterObserver();
+                task.newSearch(s);
                 if(s.length() > 2){
-                    task = new SearchTask(searchObserver, s);
                     threadExecutor.execute(task);
                 }
                 return false;
@@ -82,8 +91,10 @@ public class Lab5Activity  extends AppCompatActivity {
         public void onSuccess(@NonNull Task<List<Repo>> task, @Nullable List<Repo> data) {
             Log.d(TAG, "onSuccess");
             for (Repo repo : data) {
-                Log.d(TAG, repo.toString());
+                reposCache.addRepo(repo);
             }
+            reposAdapter.setRepos(reposCache.getRepos());
+            reposAdapter.notifyDataSetChanged();
         }
 
         @Override

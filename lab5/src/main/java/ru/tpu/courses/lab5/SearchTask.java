@@ -19,6 +19,7 @@ public class SearchTask extends Task<List<Repo>> {
 
     private static OkHttpClient httpClient;
     private static String query="";
+    private static boolean waitDelay = false;
 
     public static OkHttpClient getHttpClient() {
         if (httpClient == null) {
@@ -44,9 +45,21 @@ public class SearchTask extends Task<List<Repo>> {
         this.query = query;
     }
 
+    public void newSearch(String newQuery){
+        waitDelay = (query.length() > 2);
+        if(waitDelay)
+            resetQueries();
+
+        query = newQuery;
+    }
+
     @Override
     @WorkerThread
     protected List<Repo> executeInBackground() throws Exception {
+        if(waitDelay)
+            synchronized(this) {
+                wait(500);
+            }
         String response = search();
         return parseSearch(response);
     }
@@ -71,7 +84,7 @@ public class SearchTask extends Task<List<Repo>> {
             JSONObject repoJson = items.getJSONObject(i);
             Repo repo = new Repo();
             repo.fullName = repoJson.getString("full_name");
-            repo.description = repoJson.getString("full_name");
+            repo.description = repoJson.getString("description");
             repo.url = repoJson.getString("html_url");
             repos.add(repo);
         }

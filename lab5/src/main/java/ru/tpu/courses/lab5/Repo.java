@@ -9,6 +9,7 @@ public class Repo {
     public String toString() {
         return "Repo{" +
                 "fullName='" + fullName + '\'' +
+                ", description='" + description + '\'' +
                 ", url='" + url + '\'' +
                 '}';
     }

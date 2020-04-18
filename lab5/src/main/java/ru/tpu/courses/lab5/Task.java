@@ -33,6 +33,7 @@ public abstract class Task<T> implements Runnable {
         this.observer = observer;
     }
 
+
     @Override
     public final void run() {
         // Устанавливаем низкий приоритет потоку, чтобы не нагружать цпу
@@ -69,5 +70,9 @@ public abstract class Task<T> implements Runnable {
      */
     public final void unregisterObserver() {
         observer = null;
+    }
+
+    public void resetQueries(){
+        mainHandler.removeCallbacks(this);
     }
 }
